@@ -23,11 +23,8 @@ type Props = {
  */
 const Card = ({ tzData, page }: Props) => {
   // get current time to state
-  const [currentTime, setCurrentTime] = useState(
-    page === 'timeis'
-      ? getCurrentTime(tzData.name, store.getState().storedata.dateFormat)
-      : getParsedTime(tzData.name)
-  );
+  const [currentTime, setCurrentTime] = useState('');
+  const [mounted, setMounted] = useState(false);
   const [selected, setSelected] = useState<Timezones | null>(null);
   const [customName, setCustomName] = useState(tzData.customname ? tzData.customname : tzData.name);
   const [editable, setEditable] = useState(false);
@@ -46,6 +43,7 @@ const Card = ({ tzData, page }: Props) => {
 
   // set interval to update time
   useEffect(() => {
+    setMounted(true);
     const interval = setInterval(() => {
       setCurrentTime(
         page === 'timewas' ? getParsedTime(tzData.name) : getCurrentTime(tzData.name, store.getState().storedata.dateFormat),
@@ -116,7 +114,7 @@ const Card = ({ tzData, page }: Props) => {
             bg-black/30 rounded-lg p-3 hover:bg-brand-primary/20 transition-all duration-300"
           onClick={() => setSelected(tzData)}
         >
-          {currentTime}
+          {mounted ? currentTime : '...'}
         </div>
       </div>
       <button

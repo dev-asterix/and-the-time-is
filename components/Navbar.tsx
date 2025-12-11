@@ -32,9 +32,8 @@ type navbarProps = {
 const Navbar = ({ title, searchBar, timePicker }: navbarProps) => {
   // get current time to state
   const [selected, setSelected] = useState<Timezones | null>(null);
-  const [currentTime, setCurrentTime] = useState(
-    getCurrentTime(Intl.DateTimeFormat().resolvedOptions().timeZone, store.getState().storedata.dateFormat),
-  );
+  const [currentTime, setCurrentTime] = useState('');
+  const [mounted, setMounted] = useState(false);
 
   const now = new Date();
   const [dateString, setDateString] = useState({
@@ -48,6 +47,7 @@ const Navbar = ({ title, searchBar, timePicker }: navbarProps) => {
 
   // set interval to update time
   useEffect(() => {
+    setMounted(true);
     timePicker
       && store.dispatch(
         {
@@ -90,7 +90,7 @@ const Navbar = ({ title, searchBar, timePicker }: navbarProps) => {
               <p className='mt-4 text-2xl truncate md:text-4xl font-bold cursor-pointer hover:text-brand-accent transition-colors duration-300 bg-black/20 rounded-lg p-3 mx-auto max-w-fit backdrop-blur-sm'
                 onClick={() => setSelected(timezoneList.filter(tz => tz.name === Intl.DateTimeFormat().resolvedOptions().timeZone)[0] as Timezones)}
               >
-                {currentTime}
+                {mounted ? currentTime : '...'}
               </p>
             </div>
 
