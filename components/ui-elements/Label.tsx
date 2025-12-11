@@ -7,7 +7,7 @@ type Props = {
 
 const Label = ({ text, classes }: Props) => {
   return (
-    <label className={`block uppercase tracking-wide text-teal-400 mt-4 text-sm font-bold ${classes}`}>
+    <label className={`block uppercase tracking-wider text-brand-accent mt-4 mb-2 text-sm font-bold ${classes}`}>
       {text}
     </label>
   )

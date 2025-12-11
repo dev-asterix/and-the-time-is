@@ -23,11 +23,8 @@ type Props = {
  */
 const Card = ({ tzData, page }: Props) => {
   // get current time to state
-  const [currentTime, setCurrentTime] = useState(
-    page === 'timeis'
-      ? getCurrentTime(tzData.name, store.getState().storedata.dateFormat)
-      : getParsedTime(tzData.name)
-  );
+  const [currentTime, setCurrentTime] = useState('');
+  const [mounted, setMounted] = useState(false);
   const [selected, setSelected] = useState<Timezones | null>(null);
   const [customName, setCustomName] = useState(tzData.customname ? tzData.customname : tzData.name);
   const [editable, setEditable] = useState(false);
@@ -46,6 +43,7 @@ const Card = ({ tzData, page }: Props) => {
 
   // set interval to update time
   useEffect(() => {
+    setMounted(true);
     const interval = setInterval(() => {
       setCurrentTime(
         page === 'timewas' ? getParsedTime(tzData.name) : getCurrentTime(tzData.name, store.getState().storedata.dateFormat),
@@ -55,13 +53,14 @@ const Card = ({ tzData, page }: Props) => {
   }, [page, tzData.name]);
 
   return (
-    <div className='flex flex-row justify-between bg-gradient-to-br from-slate-800 to-slate-900 
-        border border-slate-600 border-dashed shadow-[0px_50px_30px_-15px_rgba(0,0,0,0.33)] rounded-lg p-4'
+    <div className='relative flex flex-row justify-between bg-gradient-to-br from-gray-800 to-gray-900 
+        border border-gray-700 shadow-xl rounded-xl p-5 hover:shadow-glow transition-all duration-300 
+        hover:scale-105 hover:border-brand-primary group'
       key={tzData.name}>
-      <div>
-        <div className="flex flex-row justify-start text-sm font-medium">
+      <div className="flex-1">
+        <div className="flex flex-row items-center gap-2 text-sm font-medium mb-3">
           <h3
-            className="text-lg leading-6 font-medium truncate text-teal-600 cursor-pointer"
+            className="text-lg leading-6 font-semibold truncate text-brand-accent cursor-pointer flex-1"
             id="modal-title"
             onClick={() => {
               if (!editable) {
@@ -74,8 +73,8 @@ const Card = ({ tzData, page }: Props) => {
               name="card-name"
               id="card-name"
               disabled={!editable}
-              className={`appearance-none bg-transparent p-1 rounded-lg ${editable ? 'border-b border-teal-600 border-dashed' : 'cursor-pointer'}
-                focus:outline-none transition ease-in-out duration-1000`}
+              className={`appearance-none bg-transparent p-1 rounded-lg w-full ${editable ? 'border-b-2 border-brand-primary' : 'cursor-pointer'}
+                focus:outline-none transition-all duration-300`}
               value={customName}
               onChange={(e) => { handleCardTitleChange(e) }}
               onBlur={() => { setEditable(false) }}
@@ -84,14 +83,14 @@ const Card = ({ tzData, page }: Props) => {
           {
             editable ? (
               <VscClose
-                size={22}
-                className='text-gray-600 cursor-pointer'
+                size={20}
+                className='text-gray-400 hover:text-white cursor-pointer transition-colors'
                 onClick={() => { setEditable(false) }}
               />
             ) : (
               <FiEdit
-                size={18}
-                className='text-gray-600 cursor-pointer'
+                size={16}
+                className='text-gray-500 hover:text-brand-accent cursor-pointer transition-colors opacity-0 group-hover:opacity-100'
                 onClick={() => { setEditable(true) }}
               />
             )
@@ -99,8 +98,8 @@ const Card = ({ tzData, page }: Props) => {
           {
             !editable && tzData.customname && (
               <CgUndo
-                size={18}
-                className='text-gray-600 cursor-pointer ml-2'
+                size={16}
+                className='text-gray-500 hover:text-brand-accent cursor-pointer transition-colors'
                 onClick={() => {
                   setCustomName(tzData.name);
                   const updatedTz = { ...tzData, customname: null };
@@ -111,20 +110,24 @@ const Card = ({ tzData, page }: Props) => {
           }
         </div>
 
-        <div className="mt-3 text-gray-200 text-lg truncate font-semibold leading-tight cursor-pointer"
+        <div className="text-white text-xl md:text-2xl truncate font-bold leading-tight cursor-pointer 
+            bg-black/30 rounded-lg p-3 hover:bg-brand-primary/20 transition-all duration-300"
           onClick={() => setSelected(tzData)}
         >
-          {currentTime}
+          {mounted ? currentTime : '...'}
         </div>
       </div>
-      <div className='flex flex-col items-center justify-center p-2 border-l border-t border-slate-700 cursor-pointer border-dashed
-      rounded-lg text-gray-600 transition duration-500 ease-in-out hover:bg-pink-900 hover:text-white  shadow-[0px_10px_20px_-5px_rgba(0,0,0,0.33)]'
+      <button
+        className='ml-3 flex flex-col items-center justify-center px-3 rounded-lg 
+          text-gray-500 transition-all duration-300 hover:bg-red-500/20 hover:text-red-400 
+          border border-transparent hover:border-red-500/50 group-hover:scale-110'
         onClick={() =>
           store.dispatch({ type: "timezone/remove", payload: { timezone: tzData, dateFormat: '' } })
         }
+        aria-label="Remove timezone"
       >
         <RiCloseFill size={24} />
-      </div>
+      </button>
       {selected && <TimestampModal timezone={selected} setSelected={setSelected} />}
     </div>
   );

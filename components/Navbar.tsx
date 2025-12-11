@@ -32,9 +32,8 @@ type navbarProps = {
 const Navbar = ({ title, searchBar, timePicker }: navbarProps) => {
   // get current time to state
   const [selected, setSelected] = useState<Timezones | null>(null);
-  const [currentTime, setCurrentTime] = useState(
-    getCurrentTime(Intl.DateTimeFormat().resolvedOptions().timeZone, store.getState().storedata.dateFormat),
-  );
+  const [currentTime, setCurrentTime] = useState('');
+  const [mounted, setMounted] = useState(false);
 
   const now = new Date();
   const [dateString, setDateString] = useState({
@@ -48,6 +47,7 @@ const Navbar = ({ title, searchBar, timePicker }: navbarProps) => {
 
   // set interval to update time
   useEffect(() => {
+    setMounted(true);
     timePicker
       && store.dispatch(
         {
@@ -71,29 +71,31 @@ const Navbar = ({ title, searchBar, timePicker }: navbarProps) => {
   return (
     <>
       <div
-        className='h-1/2 text-center shadow-[0px_50px_30px_-15px_rgba(0,0,0,0.33)] bg-gradient-to-br 
-           from-cyan-800 to-slate-900 text-slate-300 border-b border-dashed border-gray-600
-          sm:shadow-[0px_50px_50px_-15px_rgba(0,0,0,0.6)]'>
-        <div className="grid lg:grid-cols-2">
-          <div className='p-2 lg:p-8 mt-2 lg:mt-10'>
+        className='text-center shadow-2xl bg-gradient-to-br from-brand-primary via-brand-secondary to-brand-dark 
+           text-slate-100 border-b border-gray-700 relative overflow-hidden'>
+        {/* Animated background effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse"></div>
+        
+        <div className="grid lg:grid-cols-2 relative z-10">
+          <div className='p-4 lg:p-8 mt-4 lg:mt-8'>
             <Link href={searchBar ? '/TimeWas' : '/'}>
-              <a className='text-4xl font-nova-flat md:text-6xl pb-2 animate-pulse hover:text-teal-500'>
+              <a className='text-4xl font-nova-flat md:text-6xl pb-2 hover:text-brand-accent transition-colors duration-300 inline-block transform hover:scale-105 transition-transform'>
                 {title}
               </a>
             </Link>
-            <div className='mt-5 md:mt-20 font-nova-flat text-slate-300'>
-              <p className='text-teal-500 text-lg'>
-                {`Local Time in  ${Intl.DateTimeFormat().resolvedOptions().timeZone} :`}
+            <div className='mt-6 md:mt-16 font-nova-flat'>
+              <p className='text-brand-accent text-sm md:text-base font-semibold uppercase tracking-wider'>
+                {`Local Time in ${Intl.DateTimeFormat().resolvedOptions().timeZone}`}
               </p>
-              <p className='mt-3 text-xl truncate md:text-3xl list-outside hover:text-teal-300'
+              <p className='mt-4 text-2xl truncate md:text-4xl font-bold cursor-pointer hover:text-brand-accent transition-colors duration-300 bg-black/20 rounded-lg p-3 mx-auto max-w-fit backdrop-blur-sm'
                 onClick={() => setSelected(timezoneList.filter(tz => tz.name === Intl.DateTimeFormat().resolvedOptions().timeZone)[0] as Timezones)}
               >
-                {currentTime}
+                {mounted ? currentTime : '...'}
               </p>
             </div>
 
           </div>
-          <div className={`p-2 ${searchBar ? 'lg:p-10' : 'lg:p-2'} md:z-10`}>
+          <div className={`p-4 ${searchBar ? 'lg:p-10' : 'lg:p-4'} md:z-10`}>
             {timePicker && <TimePicker now={now} dateString={dateString} setDateString={setDateString} />}
             {searchBar && <TimezoneSearch />}
           </div>

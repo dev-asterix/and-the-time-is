@@ -104,10 +104,11 @@ function DateFormatModal({ setFormatPickerSelected }: Props) {
 
         {/* add drop down icon */}
         <select
-          className='appearance-none p-2 px-2 m-2 bg-slate-600 focus:bg-slate-700 animate-pulse 
-                    focus:animate-none transition duration-1000 ease-in-out
-                    rounded-full w-full text-gray-300 focus:outline-none focus:shadow-outline
-                    border border-gray-500 border-dashed scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-gray-700'
+          className='p-3 px-4 m-2 bg-gray-700 focus:bg-gray-600 
+                    transition-all duration-300 ease-in-out
+                    rounded-xl w-full text-white focus:outline-none focus:ring-2 focus:ring-brand-primary
+                    border-2 border-gray-600 focus:border-brand-primary scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-gray-700
+                    cursor-pointer shadow-lg'
           autoFocus
           onChange={(e) => {
             const val = e.target.value;
@@ -132,15 +133,15 @@ function DateFormatModal({ setFormatPickerSelected }: Props) {
           dateFormat === 'custom' && (
             <>
               <button
-                className='text-teal-600 pl-5 text-sm'
+                className='text-brand-accent pl-5 text-sm hover:text-brand-primary transition-colors font-medium'
                 onClick={() => setExpandInstruction(!expandInstruction)}
               >
-                click here for instructions
+                {expandInstruction ? '▼' : '▶'} Instructions
               </button>
 
               {expandInstruction && (<>
                 {/* table with timezone details */}
-                <div className="table-responsive border rounded-lg border-gray-600 m-2 p-2">
+                <div className="table-responsive border-2 rounded-xl border-gray-600 m-2 p-2 bg-gray-800/50">
                   <table className="table-auto w-full">
                     <tbody>
                       <TableHeader heading='Format' />
@@ -163,12 +164,12 @@ function DateFormatModal({ setFormatPickerSelected }: Props) {
 
               <div className="flex flex-col px-4 pb-4 sm:pb-4">
                 {/* add reset button inside input */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
                   <div className="flex-1">
                     <input
                       type="text"
-                      className="block w-full bg-slate-600 opacity-50 focus:opacity-100 p-4 rounded-full text-white text-sm 
-                              leading-tight focus:outline-none focus:bg-slate-700 focus:text-white"
+                      className="block w-full bg-gray-700 border-2 border-gray-600 focus:border-brand-primary p-4 rounded-xl text-white text-sm 
+                              leading-tight focus:outline-none focus:ring-2 focus:ring-brand-primary transition-all duration-300"
                       placeholder="Enter date format"
                       defaultValue={defFormatString}
                       value={formatString}
@@ -178,15 +179,21 @@ function DateFormatModal({ setFormatPickerSelected }: Props) {
                       }}
                     />
                   </div>
-                  <BiReset size={24} color='gray' onClick={() => { setFormatString(defFormatString) }} className='cursor-pointer' />
+                  <button 
+                    onClick={() => { setFormatString(defFormatString) }} 
+                    className='p-2 hover:bg-gray-700 rounded-lg transition-colors cursor-pointer'
+                    aria-label="Reset to default"
+                  >
+                    <BiReset size={24} color='#9ca3af' />
+                  </button>
                 </div>
 
               </div>
             </>
           )
         }
-        <p className='text-gray-500 pl-5 text-sm mt-5 border-t border-gray-600 border-dashed'>DATE FORMAT PREVIEW</p>
-        <p className='text-teal-400 text-center text-xl text-ellipsis font-semibold py-2'>
+        <p className='text-gray-400 pl-5 text-sm mt-5 pt-5 border-t-2 border-gray-700 uppercase tracking-wider font-medium'>Preview</p>
+        <p className='text-brand-accent text-center text-xl text-ellipsis font-bold py-3 bg-black/30 rounded-lg mx-5 mt-2'>
           {formattedTime}
         </p>
       </>
