@@ -58,39 +58,43 @@ const Main = ({ page }: mainProps) => {
 
   return (
     <>
-      <div className='flex flex-col justify-between min-h-full min-w-full bg-gradient-to-br from-slate-700 to-slate-900'>
+      <div className='flex flex-col justify-between min-h-full min-w-full bg-gradient-to-br from-brand-darker via-brand-dark to-slate-900'>
         <div>
           <Navbar
             title={`And the time ${page === 'timeis' ? 'is' : 'was'}...`}
             searchBar={page === 'timeis'}
             timePicker={page === 'timewas'}
           />
-          <div className="flex flex-row-reverse pr-5 mt-5">
-            <ButtonGroup layout={layout} setLayout={setLayout} toLayout={'list'} position='right' >
-              <HiViewGrid size={22} color={layout === 'list' ? 'gray' : 'white'} />
-            </ButtonGroup>
-            <ButtonGroup layout={layout} setLayout={setLayout} toLayout={'grid'} position='left' >
-              <BsGrid3X2GapFill size={22} color={layout === 'grid' ? 'gray' : 'white'} />
-            </ButtonGroup>
-
-            <div className='mx-4'>
-              <button
-                type="button"
-                className="w-full inline-flex justify-center rounded-md border-t border-l border-gray-600
-                    px-4 py-2 bg-teal-600 font-medium text-clip text-white hover:bg-teal-700 
-                    focus:outline-none sm:ml-3 transition ease-in-out duration-1000 
-                    shadow-[10px_10px_20px_-5px_rgba(0,0,0,0.53)]"
-                data-bs-toggle="timestampmodal"
-                data-bs-target="#timestampmodal"
-                onClick={() => {
-                  setFormatPickerSelected(true);
-                }}
-              >
-                Change date format
-              </button>
+          <div className="flex flex-wrap items-center justify-between px-5 mt-5 gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-gray-400 text-sm font-medium">View:</span>
+              <div className="flex rounded-lg overflow-hidden border border-gray-700 shadow-lg">
+                <ButtonGroup layout={layout} setLayout={setLayout} toLayout={'grid'} position='left' >
+                  <BsGrid3X2GapFill size={20} color={layout === 'grid' ? '#3b82f6' : '#9ca3af'} />
+                </ButtonGroup>
+                <ButtonGroup layout={layout} setLayout={setLayout} toLayout={'list'} position='right' >
+                  <HiViewGrid size={20} color={layout === 'list' ? '#3b82f6' : '#9ca3af'} />
+                </ButtonGroup>
+              </div>
             </div>
+
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-brand-primary to-brand-accent 
+                  text-white font-medium rounded-lg hover:from-brand-accent hover:to-brand-primary 
+                  focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 focus:ring-offset-brand-dark
+                  transition-all duration-300 shadow-lg hover:shadow-glow"
+              onClick={() => {
+                setFormatPickerSelected(true);
+              }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Date Format
+            </button>
           </div>
-          <div className={layout === 'list' ? `grid grid-cols-1 lg:grid-cols-2 gap-2 p-3` : `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 p-2 md:p-5 w-full gap-3`}>
+          <div className={layout === 'list' ? `grid grid-cols-1 lg:grid-cols-2 gap-3 p-5` : `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 p-5 w-full gap-4`}>
             {
               timezones && timezones.map((tzData) => (
                 <Card key={tzData.name} tzData={tzData} page={page} />

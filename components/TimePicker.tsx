@@ -40,10 +40,10 @@ const TimePicker = ({ now, dateString, setDateString }: timePickerProps) => {
   return (
     <div className="mt-2 mb-1 sm:mt-2 w-full pb-3">
 
-      <div className={`flex flex-row justify-center items-center align-center mb-10 cursor-pointer
-        transition-all duration-1000 ease-in-out border-b border-dashed  border-gray-500 shadow-[10px_20px_40px_-15px_rgba(0,0,0,0.53)]
-        hover:animate-pulse hover:border-teal-500 hover:shadow-[10px_20px_30px_-10px_rgba(0,0,0,0.53)]
-        ${toggle ? 'text-teal-400' : 'text-gray-400'}`}
+      <div className={`flex flex-row justify-center items-center align-center mb-8 cursor-pointer
+        transition-all duration-300 ease-in-out border-b-2 pb-4 rounded-lg p-3
+        ${toggle ? 'text-brand-accent border-brand-accent bg-brand-primary/10' : 'text-gray-400 border-gray-600 bg-gray-800/30'}
+        hover:scale-105`}
         id='toggle-btn'
         aria-label='toggle-btn'
         onClick={() => setToggle(!toggle)}
@@ -55,8 +55,8 @@ const TimePicker = ({ now, dateString, setDateString }: timePickerProps) => {
               : <BiToggleLeft size={48} />
           }
         </div>
-        <label htmlFor='toggle-btn' className='ml-4 cursor-pointer font-medium'>
-          {toggle ? `Select date-time from date-picker` : `Select date-time from epoch/unix`}
+        <label htmlFor='toggle-btn' className='ml-4 cursor-pointer font-semibold'>
+          {toggle ? `Date Picker Mode` : `Unix Timestamp Mode`}
         </label>
       </div>
 
@@ -105,40 +105,46 @@ const TimePicker = ({ now, dateString, setDateString }: timePickerProps) => {
         ) : (
           <>
             <Label text='Enter an epoch/unix time to convert' />
-            <p className="text-gray-500 text-md italic mb-2">
+            <p className="text-gray-300 text-sm mb-2">
               Acceptable values are any valid epoch/unix or epoch/unix nano values.
             </p>
-            <p className="text-gray-500 text-md italic mb-2">
-              eg: 1589788800, 1658279330, -1658280557, -26189012347 etc.
+            <p className="text-gray-400 text-sm mb-4">
+              eg: 1589788800, 1658279330, -1658280557, -26189012347
             </p>
-            <div className="flex flex-row justify-center items-center">
-              <label htmlFor="epoch-input" className='text-teal-500 font-medium'>Epoch/Unix time (seconds/nano seconds): </label>
-              <input
-                id='epoch-input'
-                type={'number'}
-                min={-60000000000}
-                max={60000000000}
-                step={1000}
-                defaultValue='0'
-                className='appearance-none bg-gray-700 rounded-xl w-48 ml-2 mb-5 mt-5 p-2 
-                shadow-[10px_20px_30px_-10px_rgba(0,0,0,0.53)] border-t border-l border-dashed border-gray-500
-                focus:outline-none focus:shadow-outline-blue-500'
-                placeholder='eg: 1658279330, 1000000000'
-                onChange={(e) => {
-                  let val = e.target.value;
-                  if (val.length < 5) {
-                    // pad with zeros till 9 digits
-                    val.padStart(9, '0');
-                  } else if (val === '') {
-                    val = getCurrentTime(Intl.DateTimeFormat().resolvedOptions().timeZone, '%s');
-                  }
-                  setUnixTime(val);
-                }}
-                value={unixTime}
-              />
-              <BiReset size={24} color='gray' className='cursor-pointer'
+            <div className="flex flex-row justify-center items-center gap-3">
+              <div className="flex-1">
+                <label htmlFor="epoch-input" className='text-brand-accent font-semibold block mb-2 text-sm'>Unix Timestamp:</label>
+                <input
+                  id='epoch-input'
+                  type={'number'}
+                  min={-60000000000}
+                  max={60000000000}
+                  step={1000}
+                  defaultValue='0'
+                  className='appearance-none bg-gray-700 rounded-xl w-full p-3 border-2 border-gray-600
+                  focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary
+                  text-white transition-all duration-300'
+                  placeholder='eg: 1658279330'
+                  onChange={(e) => {
+                    let val = e.target.value;
+                    if (val.length < 5) {
+                      // pad with zeros till 9 digits
+                      val.padStart(9, '0');
+                    } else if (val === '') {
+                      val = getCurrentTime(Intl.DateTimeFormat().resolvedOptions().timeZone, '%s');
+                    }
+                    setUnixTime(val);
+                  }}
+                  value={unixTime}
+                />
+              </div>
+              <button 
+                className='p-2 hover:bg-gray-700 rounded-lg transition-colors cursor-pointer mt-7'
                 onClick={() => { setUnixTime(getCurrentTime(Intl.DateTimeFormat().resolvedOptions().timeZone, '%s')) }}
-              />
+                aria-label="Reset to current time"
+              >
+                <BiReset size={24} color='#9ca3af' />
+              </button>
             </div>
           </>
         )

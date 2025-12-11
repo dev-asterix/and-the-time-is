@@ -21,11 +21,14 @@ type Props = {
  * @param {Props} props - props for component
  */
 const ButtonGroup = ({ children, layout, toLayout, position, setLayout }: Props) => {
+  const isActive = layout === toLayout;
   return (
     <button
-      disabled={layout === toLayout}
-      className={`bg-transparent border p-1.5 border-gray-300 border-dashed hover:bg-slate-700 disabled:border-gray-500 
-      shadow-[15px_20px_20px_-5px_rgba(0,0,0,0.53)] transition duration-1000 ease-in-out ${position === 'left' ? 'rounded-l-lg' : position === 'middle' ? '' : 'rounded-r-lg'}`}
+      disabled={isActive}
+      className={`${isActive ? 'bg-brand-primary/20 border-brand-primary' : 'bg-transparent border-gray-600 hover:bg-gray-700'} 
+      border p-2.5 transition-all duration-300 ease-in-out
+      ${position === 'left' ? 'rounded-l-lg border-r-0' : position === 'middle' ? 'border-r-0' : 'rounded-r-lg'}
+      disabled:cursor-not-allowed`}
       onClick={() => {
         localStorage.setItem('layout', toLayout);
         setLayout(toLayout);
