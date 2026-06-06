@@ -1,20 +1,29 @@
 import '../public/styles/globals.css';
 import { Provider } from 'react-redux';
 import { store } from '../store/store';
+import { inter, jetbrainsMono, fraunces, ibmPlexMono } from '../utils/fonts';
 
-import type { AppProps } from 'next/app';
+import type { AppProps } from 'next/dist/pages/_app';
 import Head from 'next/head';
+
 function AndTheTimeIs({ Component, pageProps }: AppProps) {
   return (
     <>
-      <Head >
-        <title>And the time is...</title>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="And the time is — live and scrubbed times across pinned timezones." />
+        <meta name="theme-color" content="#0e1322" />
+        <title>And the time is</title>
       </Head>
       <Provider store={store}>
-        <Component {...pageProps} />
-      </Provider >
+        <div
+          className={`${inter.variable} ${jetbrainsMono.variable} ${fraunces.variable} ${ibmPlexMono.variable}`}
+        >
+          <Component {...pageProps} />
+        </div>
+      </Provider>
     </>
-  )
+  );
 }
 
-export default AndTheTimeIs
+export default AndTheTimeIs;

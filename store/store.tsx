@@ -1,6 +1,11 @@
 import { configureStore, createAction, createReducer } from '@reduxjs/toolkit';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Timezones } from '../pages/api/functions/timeNow';
+import { Timezones } from '../utils/timeNow';
+import orbReducer from './orbSlice';
+import scrubReducer from './scrubSlice';
+import settingsReducer from './settingsSlice';
+import sessionReducer from './sessionSlice';
 
 /**
  * @description - This is the reducer action data type.
@@ -8,12 +13,14 @@ import { Timezones } from '../pages/api/functions/timeNow';
 type actionData = {
   timezone: Timezones;
   dateFormat: string;
+  miniNav: string;
   timewasData: string;
 }
 
 type storeData = {
   timezones: Timezones[];
   dateFormat: string;
+  miniNav: string;
   timewasData: string;
 }
 
@@ -23,6 +30,7 @@ type storeData = {
 const initState = {
   timezones: [] as Timezones[],
   dateFormat: "%b %d %Y %H:%M:%S %Z (%:z)",
+  miniNav: "full",
   timewasData: '' as string,
 } as storeData;
 
@@ -99,6 +107,20 @@ const dateFormatSetFunc = (state: storeData, action: { payload: string; type: st
   return { ...state, dateFormat: action.payload };
 };
 
+const setMiniNav = createAction<string>("navbar/resize");
+/**
+ * @description - resize the size of the navbar
+ * 
+ * @param state - current state
+ * @param action - action to be performed
+ * @returns new state
+ */
+const setMiniNavFunc = (state: storeData, action: { payload: string; type: string; }) => {
+  // store the value to local storage
+  localStorage.setItem("navbar-size", action.payload);
+  return { ...state, miniNav: action.payload };
+};
+
 const setPickedtime = createAction<string>("timewas/data");
 /**
  * @description - remove timezone from the store and update the state & local storage
@@ -122,6 +144,7 @@ const reducers = createReducer(initState, (builder) => {
   builder.addCase(removeTimezone, removeTimezoneFunc);
   builder.addCase(updateTimezone, updateTimezoneFunc);
   builder.addCase(setDateFormat, dateFormatSetFunc);
+  builder.addCase(setMiniNav, setMiniNavFunc);
   builder.addCase(setPickedtime, pickedDateFunc);
 });
 
@@ -133,6 +156,20 @@ export const store = configureStore({
     storedata: initState,
   },
   reducer: {
+    // Legacy reducer — kept temporarily for migration
     storedata: reducers,
+    // New Horizon slices
+    orbs: orbReducer,
+    scrub: scrubReducer,
+    settings: settingsReducer,
+    session: sessionReducer,
   },
 });
+
+// Infer types from the store itself
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+// Typed hooks — use these throughout the app instead of plain useDispatch/useSelector
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+export const useAppSelector = useSelector.withTypes<RootState>();
